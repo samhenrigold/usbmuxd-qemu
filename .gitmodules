@@ -1,0 +1,4 @@
+[submodule "usbmuxd"]
+	path = usbmuxd
+	url = https://github.com/samhenrigold/usbmuxd.git
+	branch = qemu-backend
