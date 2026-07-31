@@ -67,6 +67,25 @@ Clients are pointed at it with `USBMUXD_SOCKET_ADDRESS`:
 USBMUXD_SOCKET_ADDRESS=127.0.0.1:27015 idevice_id -l
 ```
 
+### Shutting things down
+
+Capture the PIDs you launch and kill exactly those:
+
+```sh
+./usbmuxd/src/usbmuxd -f -v -v -S 127.0.0.1:27015 -P NONE -C ./run/conf & MUX_PID=$!
+qemu-system-arm ... & QEMU_PID=$!
+kill $MUX_PID $QEMU_PID
+```
+
+Do not clean up with `pkill -f qemu-system-arm`, `pkill -f usbmuxd`, or
+`killall`. Several people run emulators and daemons here at once, often from
+this same directory with near-identical command lines, so a pattern broad enough
+to match your own process matches theirs too. `pkill -f usbmuxd` will also match
+the real Apple daemon at
+`/System/Library/PrivateFrameworks/MobileDevice.framework/.../usbmuxd -launchd`
+and disrupt physically attached devices. For the same reason, avoid `git add -A`
+here — someone else's scratch scripts and run artifacts end up in your commit.
+
 ### Environment
 
 | Variable | Default | Meaning |
